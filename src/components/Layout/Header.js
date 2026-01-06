@@ -6,27 +6,37 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { userData } from "@/data/userData";
 import { Menu, X, ChevronUp, Phone } from "lucide-react";
-import Image from 'next/image';
+import Image from "next/image";
+
 const Header = () => {
   const controls = useAnimation();
   const lastScrollY = useRef(0);
-  const headerRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<null>(null);
   const [isShrunk, setIsShrunk] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isClient, setIsClient] = useState(false); // Add this
   const pathname = usePathname();
 
   const menuItems = [
-    { name: "Home", path: "/"  },
+    { name: "Home", path: "/" },
     { name: "About", path: "/about" },
-    { name: "Services", path: "/services"  },
-    { name: "Research", path: "/research"  },
-    { name: "Compliance", path: "/compliance"  },
-    { name: "Blog", path: "/blog",  },
+    { name: "Services", path: "/services" },
+    { name: "Research", path: "/research" },
+    { name: "Compliance", path: "/compliance" },
+    { name: "Blog", path: "/blog" },
     { name: "Contact", path: "/contact" },
   ];
 
+  // Set isClient to true when component mounts (client-side only)
   useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    // Don't run scroll handler on server
+    if (!isClient) return;
+
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       const diff = currentScrollY - lastScrollY.current;
@@ -55,10 +65,13 @@ const Header = () => {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [controls, isShrunk, isMenuOpen]);
+  }, [controls, isShrunk, isMenuOpen, isClient]); // Add isClient to dependencies
 
   // Close menu when clicking outside
   useEffect(() => {
+    // Don't run on server
+    if (!isClient) return;
+
     const handleClickOutside = (event) => {
       if (headerRef.current && !headerRef.current.contains(event.target)) {
         setIsMenuOpen(false);
@@ -67,7 +80,18 @@ const Header = () => {
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [isClient]);
+
+  // Calculate scroll progress (client-side only)
+  const scrollProgress = isClient 
+    ? window.scrollY / (document.body.scrollHeight - window.innerHeight)
+    : 0;
+
+  const scrollToTop = () => {
+    if (isClient) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   return (
     <>
@@ -131,51 +155,48 @@ const Header = () => {
             onClick={() => setIsMenuOpen(false)}
           >
             <motion.div
-  whileHover={{ scale: 1.05, rotate: 5 }}
-  whileTap={{ scale: 0.95 }}
-  className="
-    w-15 h-15 rounded-xl overflow-hidden
-     shadow-blue-500/20
-    group-hover:shadow-blue-500/30
-    transition-all duration-300
-  "
->
-  <Image
-    src="/logo.jpeg"
-    alt="Company Logo"
-    width={90}
-    height={90}
-    className="w-full h-full object-contain"
-    priority
-  />
-</motion.div>
-
+              whileHover={{ scale: 1.05, rotate: 5 }}
+              whileTap={{ scale: 0.95 }}
+              className="
+                w-10 h-10 rounded-xl flex items-center justify-center
+                overflow-hidden relative
+                group-hover:shadow-blue-500/30 transition-all duration-300
+              "
+            >
+              <Image
+                src="/logo.jpeg"
+                alt={`${userData.companyName} Logo`}
+                fill
+                sizes="40px"
+                className="object-cover"
+                priority
+              />
+            </motion.div>
             <div className="flex flex-col">
-  <motion.h1 
-    animate={{ 
-      opacity: 1,
-      x: 0,
-      scale: isShrunk ? 0.95 : 1
-    }}
-    transition={{ duration: 0.2 }}
-    className="text-lg font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent whitespace-nowrap"
-  >
-    {userData.companyName}
-  </motion.h1>
+              <motion.h1 
+                animate={{ 
+                  opacity: 1,
+                  x: 0,
+                  scale: isShrunk ? 0.95 : 1
+                }}
+                transition={{ duration: 0.2 }}
+                className="text-lg font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent whitespace-nowrap"
+              >
+                {userData.companyName}
+              </motion.h1>
 
-  {/* Hide only registration number when shrunk */}
-  <motion.p
-    animate={{ 
-      opacity: isShrunk ? 0 : 1,
-      height: isShrunk ? 0 : "auto"
-    }}
-    transition={{ duration: 0.2 }}
-    className="text-xs text-gray-500 hidden sm:block font-medium overflow-hidden"
-  >
-    SEBI Reg: {userData.regNumber}
-  </motion.p>
-</div>
-
+              {/* Hide only registration number when shrunk */}
+              <motion.p
+                animate={{ 
+                  opacity: isShrunk ? 0 : 1,
+                  height: isShrunk ? 0 : "auto"
+                }}
+                transition={{ duration: 0.2 }}
+                className="text-xs text-gray-500 hidden sm:block font-medium overflow-hidden"
+              >
+                SEBI Reg: {userData.regNumber}
+              </motion.p>
+            </div>
           </Link>
 
           {/* Desktop navigation with enhanced animations */}
@@ -216,8 +237,7 @@ const Header = () => {
                     group/nav-item
                   `}
                 >
-                 
-                  <span className="font-bold text-stone-900  text-[1.100rem]">{item.name}</span>
+                  <span className="font-bold text-stone-900 text-[1.100rem]">{item.name}</span>
                   <span className={`
                     absolute bottom-1 left-1/2 -translate-x-1/2 h-0.5 rounded-full
                     bg-gradient-to-r from-blue-500 to-purple-500
@@ -227,8 +247,6 @@ const Header = () => {
                 </Link>
               </motion.div>
             ))}
-            
-            
           </motion.nav>
 
           {/* Mobile menu button with better animation */}
@@ -309,7 +327,6 @@ const Header = () => {
                         }
                       `}
                     >
-                      <span className="text-lg">{item.icon}</span>
                       <span>{item.name}</span>
                       {pathname === item.path && (
                         <motion.div
@@ -349,40 +366,38 @@ const Header = () => {
         </AnimatePresence>
       </motion.header>
 
-      {/* Scroll progress indicator */}
-      {isScrolled && (
+      {/* Scroll progress indicator - Only render on client */}
+      {isClient && isScrolled && (
         <motion.div
           initial={{ opacity: 0, scaleX: 0 }}
           animate={{ opacity: 1, scaleX: 1 }}
           className="fixed top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 z-40 origin-left"
-          style={{ scaleX: window.scrollY / (document.body.scrollHeight - window.innerHeight) }}
+          style={{ scaleX: scrollProgress }}
         />
       )}
 
-      {/* Scroll to top button */}
-      <AnimatePresence>
-        {isScrolled && (
-          <motion.button
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="
-              fixed bottom-8 right-8 z-40
-              w-12 h-12 rounded-full
-              bg-gradient-to-br from-blue-600 to-purple-600
-              text-white shadow-2xl shadow-blue-500/30
-              flex items-center justify-center
-              hover:shadow-blue-500/50
-              transition-all duration-300
-            "
-          >
-            <ChevronUp className="w-5 h-5" />
-          </motion.button>
-        )}
-      </AnimatePresence>
+      {/* Scroll to top button - Only render on client */}
+      {isClient && isScrolled && (
+        <motion.button
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={scrollToTop}
+          className="
+            fixed bottom-8 right-8 z-40
+            w-12 h-12 rounded-full
+            bg-gradient-to-br from-blue-600 to-purple-600
+            text-white shadow-2xl shadow-blue-500/30
+            flex items-center justify-center
+            hover:shadow-blue-500/50
+            transition-all duration-300
+          "
+        >
+          <ChevronUp className="w-5 h-5" />
+        </motion.button>
+      )}
 
       {/* Add padding to prevent content from hiding behind fixed header */}
       <div className="h-24" />
