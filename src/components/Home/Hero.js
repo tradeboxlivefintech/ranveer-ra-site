@@ -159,9 +159,7 @@ const Hero = () => {
                     <h3 className="text-xl font-bold text-gray-900">
                       Market Performance
                     </h3>
-                    <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-                      +24.5% YTD
-                    </span>
+                 
                   </div>
                   <div className="h-48 bg-gradient-to-b from-blue-50 to-white rounded-lg p-4">
                     {/* Simple Chart Illustration */}
@@ -207,10 +205,7 @@ const Hero = () => {
                 transition={{ duration: 0.8, delay: 0.8 }}
                 className="absolute -top-4 -right-4 bg-white p-4 rounded-xl shadow-lg border"
               >
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">500+</div>
-                  <div className="text-sm text-gray-600">Research Reports</div>
-                </div>
+               
               </motion.div>
 
               <motion.div
@@ -219,10 +214,7 @@ const Hero = () => {
                 transition={{ duration: 0.8, delay: 1 }}
                 className="absolute -bottom-4 -left-4 bg-white p-4 rounded-xl shadow-lg border"
               >
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-600">250+</div>
-                  <div className="text-sm text-gray-600">Clients Served</div>
-                </div>
+                
               </motion.div>
             </div>
           </motion.div>

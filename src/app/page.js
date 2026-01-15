@@ -15,7 +15,7 @@ export default function Home() {
       <Header userData={userData} />
       <main>
         <Hero />
-        <Stats />
+        {/* <Stats /> */}
         <AboutPreview />
         <ServicesPreview />
         <ResearchHighlights />
