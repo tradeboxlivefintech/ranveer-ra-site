@@ -8,12 +8,14 @@ import Stats from "@/components/Home/Stats";
 import Testimonials from "@/components/Home/Testimonials";
 import CTASection from "@/components/Home/CTASection";
 import { userData } from "@/data/userData";
+import NoticeBar from "@/components/Home/NoticeBar";
 
 export default function Home() {
   return (
     <>
       <Header userData={userData} />
       <main>
+        <NoticeBar/>
         <Hero />
         {/* <Stats /> */}
         <AboutPreview />

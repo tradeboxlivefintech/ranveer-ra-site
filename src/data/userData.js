@@ -29,7 +29,7 @@ export const userData = {
     qualifications: [
       "Research Analyst (RA)",
       "NISM Series XV: Research Analyst Certified",
-      "MBA in Finance",
+      
       "SEBI Registered Research Analyst"
     ],
     experience: "8+ Years",
