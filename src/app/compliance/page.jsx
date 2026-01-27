@@ -83,12 +83,7 @@ export default function Compliance() {
                   </div>
                   
                   {/* Grievance Officer */}
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Grievance Officer</h4>
-                    <p className="text-gray-700">{userData.compliance.grievance.name}</p>
-                    <p className="text-sm text-gray-600">Email: {userData.compliance.grievance.email}</p>
-                    <p className="text-sm text-gray-600">Phone: {userData.compliance.grievance.phone}</p>
-                  </div>
+                 
                 </div>
               </div>
             </div>
@@ -143,31 +138,8 @@ export default function Compliance() {
               </h2>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-8">
-                <div className="flex items-center mb-6">
-                  <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center text-white text-xl mr-4">
-                    ⚠️
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900">For Investor Grievances</h3>
-                </div>
-                
-                <div className="space-y-4">
-                  <p className="text-gray-700">
-                    In case of any grievance or complaint, please contact our Grievance Officer:
-                  </p>
-                  
-                  <div className="bg-white p-4 rounded-lg">
-                    <p className="font-semibold text-gray-900">{userData.compliance.grievance.name}</p>
-                    <p className="text-gray-600">Email: {userData.compliance.grievance.email}</p>
-                    <p className="text-gray-600">Phone: {userData.compliance.grievance.phone}</p>
-                  </div>
-                  
-                  <p className="text-sm text-gray-600">
-                    We strive to resolve all grievances within 30 days of receipt.
-                  </p>
-                </div>
-              </div>
+            <div className=" justify-center items-center align-center flex gap-8">
+              
 
               <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-8">
                 <div className="flex items-center mb-6">
